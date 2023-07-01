@@ -1,10 +1,11 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const config = require('./config.json');
 
-const prefix = '!'; // Set your desired prefix here
+const prefix = '?'; // Set your desired prefix here
 
 client.once('ready', () => {
-  console.log('Bot is ready!');
+  console.log('Ready to riddle!');
 });
 
 client.on('message', (message) => {
@@ -24,4 +25,4 @@ client.on('message', (message) => {
 
 });
 
-client.login('YOUR_BOT_TOKEN');
+client.login(config.token);
