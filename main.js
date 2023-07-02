@@ -50,22 +50,9 @@ async function buyThis(user, itemName, amount) {
     }
   }
 
-  // Rest of your code...
-
-  // Make sure to define the 'shop' array before using it in the 'buyThis' function.
-
-  // Example:
-  const shop = [
-    {
-      name: 'item1',
-      price: 10
-    },
-    {
-      name: 'item2',
-      price: 20
-    },
-    // Add more items here...
-  ];
+  
+  const shop = [{"name":"trivia-coin", "price": 10,"description":"A coin made of trivia questions :)"},
+  {"name": "trivia-cake","price": 100,"description":"A cake made of knowledge"},];
 }
 
 client.once('ready', () => {
@@ -143,7 +130,29 @@ client.on('message', async (message) => {
     } else {
       message.channel.send('You do not have an account! Create one with ?start');
     }
-  }
+  } else if (command === 'shop') {
+    const embed = new Discord.MessageEmbed()
+      .setTitle('Shop')
+      .setDescription('Buy items with your trivia coins!')
+      .addField('Trivia-Coin', 'A coin made of trivia questions :)')
+      .addField('Trivia-Cake', 'A Cake made of knowledge :O')
+      await message.channel.send(embed);
+  } else if (command === 'buy') {
+    const itemName = args[0];
+    const amount = args[1];
+
+    if (!itemName) {
+      message.channel.send('Please specify an item to buy!');
+    } else if (!amount) {
+      message.channel.send('Please specify an amount to buy!');
+    } else {
+      const itemBought = await buyThis(message.author, itemName, amount);
+      if (!itemBought) {
+        message.channel.send('Item not found or you do not have enough trivia coins!');
+      } else {
+        message.channel.send(`You have bought ${amount} ${itemName}(s)!`);
+      }
+    }
 
   // Add more commands here if needed
 });
