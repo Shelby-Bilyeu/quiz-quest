@@ -30,43 +30,82 @@ async function updateBank(user, change = 0, mode = 'bank') {
   return bal;
 }
 
-async function buyThis(user, itemName, amount) {
-  const lowerItemName = itemName.toLowerCase();
+async function buyThis(user, item_name, amount) {
+  item_name = item_name.toLowerCase();
   let name_ = null;
-
-  for (const item of shop) {
-    const name = item["name"].toLowerCase();
-    if (name === lowerItemName) {
-      name_ = name;
-      const price = item["price"];
-      break;
-    }
+  for (let item of shop) {
+      let name = item["name"].toLowerCase();
+      if (name === item_name) {
+          name_ = name;
+          let price = item["price"];
+          break;
+      }
   }
-
-  // Implement the logic to buy an item
-  // Return true if successful, false otherwise
-  return false;
+  
+  if (name_ === null) {
+      return [false, 1];
+  }
+  
+  let cost = price * amount;
+  
+  let users = await getBankData();
+  
+  let bal = await updateBank(user);
+  
+  if (bal[0] < cost) {
+      return [false, 2];
+  }
+  
+  try {
+      let index = 0;
+      let t = null;
+      for (let thing of users[String(user.id)]['bag']) {
+          let n = thing['item'];
+          if (n === item_name) {
+              let old_amt = thing['amount'];
+              let new_amt = old_amt + amount;
+              users[String(user.id)]['bag'][index]['amount'] = new_amt;
+              t = 1;
+              break;
+          }
+          index += 1;
+      }
+      if (t === null) {
+          let obj = {"item": item_name, "amount": amount};
+          users[String(user.id)]["bag"].push(obj);
+      }
+  } catch {
+      let obj = {"item": item_name, "amount": amount};
+      users[String(user.id)]["bag"] = [obj];
+  }
+  
+  fs.writeFileSync("bank.json", JSON.stringify(users));
+  
+  await updateBank(user, cost * -1, "bank");
+  
+  return [true, "Worked"];
 }
+
 store = [ { name: 'Trivia-Coin', price: 50 }, { name: 'Trivia-Cake', price: 100 }]
 
+//create the command so that users can buy items from the shop and have it added to their inventory 
 module.exports = {
   name: 'buy',
   description: 'Buy an item from the shop',
   async execute(message, args) {
-    const itemName = args[0];
-    const amount = args[1];
-
-    if (!itemName) {
-      message.channel.send('Please specify an item to buy!');
-    } else if (!amount) {
-      message.channel.send('Please specify an amount to buy!');
-    } else {
-      const itemBought = await buyThis(message.author, itemName, amount);
-      if (!itemBought) {
-        message.channel.send('Item not found or you do not have enough trivia coins!');
-      } else {
-        message.channel.send(`You have bought ${amount} ${itemName}(s)!`);
-      }
+    if (!args.length) {
+      return message.channel.send('Please provide the name of the item you want to buy!');
     }
-  },
+
+    const itemName = args[0];
+    const amount = args[1] || 1;
+
+    const success = await buyThis(message.author, itemName, amount);
+
+    if (success) {
+      message.channel.send(`You have successfully bought ${amount} ${itemName}!`);
+    } else {
+      message.channel.send(`Oops! There was an error while buying ${amount} ${itemName}.`);
+    }
+  }
 };
