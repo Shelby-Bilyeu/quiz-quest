@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 
+
 module.exports = {
   name: 'shop',
   description: 'Display the shop with available items',

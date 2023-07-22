@@ -1,28 +1,11 @@
 const fs = require('fs');
+const { getBankData, updateBank } = require('../functions');
+
 
 module.exports = {
   name: 'start',
   description: 'Create an account to start your adventure',
   execute(message) {
-    async function openAccount(user) {
-      const users = await getBankData();
-
-      if (String(user.id) in users) {
-        return false;
-      } else {
-        users[String(user.id)] = {};
-        users[String(user.id)]["bank"] = 0;
-      }
-
-      fs.writeFileSync('bank.json', JSON.stringify(users));
-      return true;
-    }
-
-    async function getBankData() {
-      const rawdata = fs.readFileSync('bank.json');
-      const users = JSON.parse(rawdata);
-      return users;
-    }
 
     openAccount(message.author)
       .then((accountCreated) => {
