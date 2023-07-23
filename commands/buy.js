@@ -1,30 +1,43 @@
-const fs = require('fs');
-const {getBankData, updateBank, buyThis, shop} = require('../functions');
+const { shop, getBankData, updateBank, buyThis } = require('../functions');
 
 module.exports = {
   name: 'buy',
-  description: 'Buy an item from the shop',
+  description: 'Buy items from the shop',
   async execute(message, args) {
-    if (!args.length) {
-      return message.channel.send('Please provide the name of the item you want to buy!');
+    const users = await getBankData();
+    if (args.length < 2) {
+      message.channel.send('Please provide the item name and the amount you want to buy.');
+      return;
     }
 
-    const itemName = args[0];
-    const amount = args[1] || 1;
+    const item = args[0];
+    const amount = parseInt(args[1]); // Convert the amount to an integer
+    const selectedShopItem = shop.find((itemInShop) => itemInShop.name === item);
+    if (!selectedShopItem) {
+      message.channel.send('That item does not exist in the shop.');
+      return;
+    }
 
-    const success = await buyThis(message.author, itemName, amount, shop); // Pass the 'shop' data as an argument.
+    const price = selectedShopItem.price * amount;
+    const user = message.author;
 
-    if (success[0]) { // Check the first element of the 'success' array to determine if the purchase was successful.
-      message.channel.send(`You have successfully bought ${amount} ${itemName}!`);
-    } else {
-      const errorCode = success[1];
-      if (errorCode === 1) {
-        message.channel.send(`Oops! The item "${itemName}" is not available in the shop.`);
-      } else if (errorCode === 2) {
-        message.channel.send(`Oops! You don't have enough money to buy ${amount} ${itemName}.`);
-      } else {
-        message.channel.send('Oops! There was an error while processing your request.');
+    try {
+      const [purchaseSuccess, purchaseReason] = await buyThis(user, item, amount, shop);
+      if (!purchaseSuccess) {
+        // Purchase failed
+        message.channel.send(`Purchase failed: ${purchaseReason}`);
+        return;
       }
+
+      // If no error is thrown, the purchase is successful
+      const userBank = users[user.id] || { balance: 0 };
+      userBank.balance -= price;
+      updateBank(user.id, userBank);
+
+      message.channel.send(`You have successfully purchased ${amount} ${item}(s) for ${price} credits.`);
+    } catch (error) {
+      // If an error is caught, it means the purchase failed
+      message.channel.send(`Purchase failed: ${error.message}`);
     }
-  }
+  },
 };

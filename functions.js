@@ -1,8 +1,8 @@
 const fs = require('fs');
 
 const shop = [
-    { name:'Trivia-Coin', price: 50},
-    { name: 'Trivia-Cake', price: 100 }
+    { name:'TriviaCoin', price: 50},
+    { name: 'TriviaCake', price: 100 }
 ];
 
 async function getBankData() {
@@ -22,31 +22,31 @@ async function updateBank(user, change = 0, mode = 'bank') {
 }
   
 async function buyThis(user, item_name, amount, shop) {
-    item_name = itemname.toLowerCase();
-    let name = null;
-    let price = 0; // Initialize 'price' variable
+    item_name = item_name.toLowerCase();
+    let foundItem = null;
+    let price = 0;
   
     for (let item of shop) {
       let name = item["name"].toLowerCase();
-      if (name === itemname) {
-        name = name;
-        price = item["price"]; // Assign the price here
+      if (name === item_name) {
+        foundItem = item;
+        price = item["price"];
         break;
       }
     }
   
-    if (name_ === null) {
-      return [false, 1];
+    if (foundItem === null) {
+      return [false, 1]; // Item not found error code
     }
   
     let cost = price * amount;
   
     let users = await getBankData();
   
-    let bal = await updateBank(user, 0, "bank"); // Initialize 'bal' with '0' in updateBank call
+    let bal = await updateBank(user, 0, "bank");
   
     if (bal[0] < cost) {
-      return [false, 2];
+      return [false, 2]; // Insufficient funds error code
     }
   
     try {
@@ -67,7 +67,7 @@ async function buyThis(user, item_name, amount, shop) {
         let obj = {"item": item_name, "amount": amount};
         users[String(user.id)]["bag"].push(obj);
       }
-    } catch {
+    } catch (error) {
       let obj = {"item": item_name, "amount": amount};
       users[String(user.id)]["bag"] = [obj];
     }
@@ -76,8 +76,9 @@ async function buyThis(user, item_name, amount, shop) {
   
     await updateBank(user, cost * -1, "bank");
   
-    return [true, "Worked"];
-}
+    return [true, "Worked"]; // Purchase successful
+  }
+  
 async function openAccount(user) {
   const users = await getBankData();
 
