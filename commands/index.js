@@ -5,7 +5,7 @@ const pingCommand = require('./ping.js');
 const shopCommand = require('./shop.js');
 const helloCommand = require('./hello.js');
 const startCommand = require('./start.js');
-
+const sellCommand = require('./sell.js');
 
 module.exports = {
   quest: questCommand,
@@ -15,6 +15,7 @@ module.exports = {
   shop: shopCommand,
   hello: helloCommand,
   start: startCommand,
+  sell: sellCommand,
   
   // Add more commands here
 };
