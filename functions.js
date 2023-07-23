@@ -12,13 +12,22 @@ async function getBankData() {
 }
   
 async function updateBank(user, change = 0, mode = 'bank') {
-    const users = await getBankData();
-    users[String(user.id)][mode] += change;
+    try {
+      const users = await getBankData();
+      if (!users || !users[String(user.id)] || !users[String(user.id)][mode]) {
+        throw new Error(`User or property not found for user ID: ${user.id}`);
+      }
   
-    fs.writeFileSync('bank.json', JSON.stringify(users));
+      users[String(user.id)][mode] += change;
   
-    const bal = [users[String(user.id)]["bank"]];
-    return bal;
+      fs.writeFileSync('bank.json', JSON.stringify(users));
+  
+      const bal = [users[String(user.id)]["bank"]];
+      return bal;
+    } catch (error) {
+      console.error('Error in updateBank:', error);
+      throw new Error('Error updating bank data.');
+    }
 }
   
 async function buyThis(user, item_name, amount, shop) {
