@@ -8,6 +8,7 @@ const startCommand = require('./start.js');
 const sellCommand = require('./sell.js');
 const invCommand = require('./inv.js');
 const helpCommand = require('./help.js');
+const hatchcommand = require('./hatch.js');
 
 module.exports = {
   quest: questCommand,
@@ -20,6 +21,7 @@ module.exports = {
   sell: sellCommand,
   help: helpCommand,
   inv: invCommand,
+  hatch: hatchcommand,
   
   // Add more commands here
 };
