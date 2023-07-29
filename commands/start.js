@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { getBankData, updateBank } = require('../functions');
+const { getBankData, updateBank, openAccount } = require('../functions');
 
 
 module.exports = {
