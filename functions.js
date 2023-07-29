@@ -155,6 +155,7 @@ async function openAccount(user) {
   } else {
     users[String(user.id)] = {};
     users[String(user.id)]["bank"] = 0;
+    users[String(user.id)]["pets"] = [];
   }
 
   fs.writeFileSync('bank.json', JSON.stringify(users));
