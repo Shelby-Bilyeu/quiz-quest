@@ -6,6 +6,7 @@ const shopCommand = require('./shop.js');
 const helloCommand = require('./hello.js');
 const startCommand = require('./start.js');
 const sellCommand = require('./sell.js');
+const invCommand = require('./inv.js');
 const helpCommand = require('./help.js');
 
 module.exports = {
@@ -18,6 +19,7 @@ module.exports = {
   start: startCommand,
   sell: sellCommand,
   help: helpCommand,
+  inv: invCommand,
   
   // Add more commands here
 };
