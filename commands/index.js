@@ -9,6 +9,7 @@ const sellCommand = require('./sell.js');
 const invCommand = require('./inv.js');
 const helpCommand = require('./help.js');
 const hatchcommand = require('./hatch.js');
+const dailycommand = require('./daily.js');
 
 module.exports = {
   quest: questCommand,
@@ -22,6 +23,7 @@ module.exports = {
   help: helpCommand,
   inv: invCommand,
   hatch: hatchcommand,
+  daily: dailycommand,
   
   // Add more commands here
 };
