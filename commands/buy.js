@@ -11,9 +11,9 @@ module.exports = {
         return;
       }
 
-      const item = args[0];
+      const item = args[0].toLowerCase();
       const amount = parseInt(args[1]); // Convert the amount to an integer
-      const selectedShopItem = shop.find((itemInShop) => itemInShop.name === item);
+      const selectedShopItem = shop.find((itemInShop) => itemInShop.name.toLowerCase()   === item);
       if (!selectedShopItem) {
         message.channel.send('That item does not exist in the shop.');
         return;

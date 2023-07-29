@@ -3,7 +3,7 @@ const fs = require('fs');
 const shop = [
   { name: 'TriviaCoin', price: 50 },
   { name: 'TriviaCake', price: 100 },
-  { name: 'Egg', price: 200 }, // Add the egg to the shop
+  { name: 'Egg', price: 1000 }, // Add the egg to the shop
 ];
 
 const animals = ['Cat', 'Dog', 'Bird', 'Rabbit', 'Fish'];
