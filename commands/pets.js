@@ -24,12 +24,11 @@ module.exports = {
         return;
       }
 
-      const page = parseInt(message.content.split(' ')[1], 10) || 1;
       const totalPages = Math.ceil(pets.length / PETS_PER_PAGE);
+      let page = parseInt(message.content.split(' ')[1], 10) || 1;
 
       if (page < 1 || page > totalPages) {
-        await message.channel.send(`Invalid page number. Please enter a page between 1 and ${totalPages}.`);
-        return;
+        page = 1;
       }
 
       const startIndex = (page - 1) * PETS_PER_PAGE;
@@ -39,28 +38,15 @@ module.exports = {
       const embed = new Discord.MessageEmbed()
         .setTitle(`Pets :dog: - Page ${page}/${totalPages}`)
         .setColor('#0099ff')
-        .setFooter('Use ?pets <page number> to view a different page of pets.');
+        .setFooter(`You have a total of ${pets.length} pets. Use ?pets <page number> to view a different page of pets.`);
 
-      // Loop through the currentPets array, adding two columns of five pets each
-      for (let i = 0; i < 2; i++) {
-        const columnContent = [];
-
-        for (let j = 0; j < 5; j++) {
-          const petIndex = i * 2 + j;
-          const pet = currentPets[petIndex];
-
-          if (pet) {
-            columnContent.push(
-              `Pet ${startIndex + petIndex + 1}: ${pet.name} (Level ${pet.level})\nHealth: ${pet.health}, Attack: ${pet.attack}, Defense: ${pet.defense}`
-            );
-          } else {
-            columnContent.push('\u200b'); // Empty field to maintain the grid structure
-          }
-        }
-
-        // Add the fields for the current column to the embed
-        embed.addField(`Column ${i + 1}`, columnContent.join('\n\n'), true);
-      }
+      currentPets.forEach((pet, index) => {
+        embed.addField(
+          `Pet ${startIndex + index + 1}: ${pet.name} (Level ${pet.level})`,
+          `Health: ${pet.health}, Attack: ${pet.attack}, Defense: ${pet.defense}`,
+          true
+        );
+      });
 
       await message.channel.send(embed);
     } catch (error) {
