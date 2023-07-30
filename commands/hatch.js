@@ -31,23 +31,13 @@ module.exports = {
       const randomAnimal = animals[randomIndex];
 
       // Add the hatched animal to the user's pets
-      const petIndex = userBank.pets.findIndex(pet => pet.name === randomAnimal.name);
-      if (petIndex !== -1) {
-        // If the pet already exists, update its stats and level
-        userBank.pets[petIndex].level = randomAnimal.level;
-        userBank.pets[petIndex].health = randomAnimal.health;
-        userBank.pets[petIndex].attack = randomAnimal.attack;
-        userBank.pets[petIndex].defense = randomAnimal.defense;
-      } else {
-        // If the pet doesn't exist, add it to the user's pets with its stats
-        userBank.pets.push({
-          name: randomAnimal.name,
-          level: randomAnimal.level,
-          health: randomAnimal.health,
-          attack: randomAnimal.attack,
-          defense: randomAnimal.defense,
-        });
-      }
+      userBank.pets.push({
+        name: randomAnimal.name,
+        level: randomAnimal.level,
+        health: randomAnimal.health,
+        attack: randomAnimal.attack,
+        defense: randomAnimal.defense,
+      });
 
       // Subtract one egg from the user's inventory
       if (userInv[eggIndex].amount > 1) {

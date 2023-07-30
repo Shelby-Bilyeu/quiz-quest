@@ -11,6 +11,7 @@ const helpCommand = require('./help.js');
 const hatchcommand = require('./hatch.js');
 const dailycommand = require('./daily.js');
 const baltopcommand = require('./baltop.js');
+const petCommand = require('./pets.js');
 
 module.exports = {
   quest: questCommand,
@@ -26,5 +27,6 @@ module.exports = {
   hatch: hatchcommand,
   daily: dailycommand,
   baltop: baltopcommand,  
+  pets: petCommand,
   // Add more commands here
 };

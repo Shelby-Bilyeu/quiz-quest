@@ -9,28 +9,25 @@ const shop = [
 const animals = ['Cat', 'Dog', 'Bird', 'Rabbit', 'Fish'];
 
 async function getBankData() {
-    const rawdata = fs.readFileSync('bank.json');
-    const users = JSON.parse(rawdata);
-    return users;
+  const rawData = fs.readFileSync('bank.json');
+  return JSON.parse(rawData);
 }
 
-async function updateBank(user, change = 0, mode = 'bank') {
-  try {
-    const users = await getBankData();
-    if (!users || !users[String(user.id)] || !users[String(user.id)][mode]) {
-      throw new Error(`User or property not found for user ID: ${user.id}`);
-    }
+async function updateBank(user, amount, property) {
+  const bankData = await getBankData();
+  const userId = user.id || user; // Handle both user objects and user IDs
 
-    users[String(user.id)][mode] += change;
-
-    fs.writeFileSync('bank.json', JSON.stringify(users));
-
-    const bal = [users[String(user.id)]["bank"]];
-    return bal;
-  } catch (error) {
-    console.error('Error in updateBank:', error);
-    throw new Error('Error updating bank data.');
+  if (!bankData[userId]) {
+    bankData[userId] = { bank: 0, bag: [], pets: [] };
   }
+
+  if (!bankData[userId][property]) {
+    bankData[userId][property] = 0;
+  }
+
+  bankData[userId][property] += amount;
+
+  fs.writeFileSync('bank.json', JSON.stringify(bankData));
 }
 
 async function buyThis(user, item_name, amount, shop) {
